@@ -27,6 +27,11 @@ import { deleteGroupAttribute } from '../App/actions';
 export class GroupPage extends React.Component {
   featureType = 'group';
 
+  displayNotifFeatureNotSaved = () =>
+    strapi.notification.info(
+      `${pluginId}.notification.info.contentType.creating.notSaved`
+    );
+
   getFeature = () => {
     const { modifiedDataGroup, newGroup } = this.props;
 
@@ -117,6 +122,19 @@ export class GroupPage extends React.Component {
     this.props.history.push(backPathname);
   };
 
+  handleOpenModalAttributes = () => {
+    const {
+      canOpenModal,
+      history: { push },
+    } = this.props;
+
+    if (canOpenModal || this.isUpdatingTempFeature()) {
+      push({ search: 'modalType=chooseAttributes' });
+    } else {
+      this.displayNotifFeatureNotSaved();
+    }
+  };
+
   isUpdatingTempFeature = () => {
     const { groups } = this.props;
     const currentData = groups.find(d => d.name === this.getFeatureName());
@@ -139,7 +157,7 @@ export class GroupPage extends React.Component {
     const buttonProps = {
       kind: 'secondaryHotlineAdd',
       label: `${pluginId}.button.attributes.add`,
-      onClick: () => {},
+      onClick: this.handleOpenModalAttributes,
     };
 
     return (
@@ -158,6 +176,7 @@ export class GroupPage extends React.Component {
               }`}
               id="openAddAttr"
               label="content-type-builder.button.attributes.add"
+              onClick={this.handleOpenModalAttributes}
               title="content-type-builder.home.emptyAttributes.title"
             />
           ) : (
@@ -191,6 +210,7 @@ export class GroupPage extends React.Component {
           )}
         </ViewContainer>
         <AttributesModalPicker
+          featureType="group"
           isOpen={this.getModalType() === 'chooseAttributes'}
           push={push}
         />

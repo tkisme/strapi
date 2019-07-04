@@ -194,10 +194,12 @@ AttributesPickerModal.contextTypes = {
 };
 
 AttributesPickerModal.defaultProps = {
+  featureType: 'model',
   isOpen: false,
 };
 
 AttributesPickerModal.propTypes = {
+  featureType: PropTypes.string,
   isOpen: PropTypes.bool,
   push: PropTypes.func.isRequired,
 };
